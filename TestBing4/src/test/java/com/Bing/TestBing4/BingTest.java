@@ -93,7 +93,7 @@ public class BingTest {
 		ImgBigSea.click();
 
 		WebElement AddCol = (new WebDriverWait(EventDriver, 10)).until(ExpectedConditions.elementToBeClickable(
-				By.xpath("//div[@class='irhcs']//span[@class='favC']/svg[@class='collicon gen favSav']")));
+				By.xpath("//span[@class='irhcsb']/span[@class='favC']")));
 		Assert.assertTrue(AddCol.isDisplayed(), "Кнопка не отображается");
 		Logs.RecordsLogs("Отображение кнопки Добавить в коллекцию " + AddCol.isDisplayed());
 
