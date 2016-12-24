@@ -13,11 +13,8 @@ public class Logirovanie extends AbstractWebDriverEventListener{
 	}
 
 	@Override
-	public void afterChangeValueOf(WebElement arg0, WebDriver arg1, CharSequence[] arg2) {
-		if (arg2.length == 0)
-			RecordsLogs("Был очищен данный элемент " + arg0.getTagName());
-		else
-			RecordsLogs("В данный элемент  " + arg0.getTagName() + " был введен следующий запрос " + arg2.toString());
+	public void afterChangeValueOf(WebElement arg0, WebDriver arg1, CharSequence[] arg2) { 
+		RecordsLogs("Значение элемента изменено: " + arg0.getTagName());
 
 	}
 
@@ -54,10 +51,7 @@ public class Logirovanie extends AbstractWebDriverEventListener{
 
 	@Override
 	public void beforeChangeValueOf(WebElement arg0, WebDriver arg1, CharSequence[] arg2) {
-		if (arg2.length == 0)
-			RecordsLogs("Следующий элемент будет очищен " + arg0.getTagName());
-		else
-			RecordsLogs("В данный элемент  " + arg0.getTagName() + " будет введен следующий запрос " + arg2.toString());
+		RecordsLogs("Значение элемента изменено: " + arg0.getTagName());
 
 	}
 

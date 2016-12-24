@@ -32,7 +32,7 @@ import org.testng.annotations.AfterTest;
 public class BingTest {
 	EventFiringWebDriver EventDriver;
 	Logirovanie Logs;
-	int Img;
+	int Imgs;
 
 	@Test()
 	public void Test1() {
@@ -42,7 +42,7 @@ public class BingTest {
 		Logs.RecordsLogs("Проверяем заголовок у страницы");
 
 		boolean Title = (new WebDriverWait(EventDriver, 10))
-				.until(ExpectedConditions.titleContains("Лента изображений Bing"));
+				.until(ExpectedConditions.titleContains("Bing Image Feed"));
 		Logs.RecordsLogs("Заголовок на странице " + Title);
 
 		JavascriptExecutor Js = (JavascriptExecutor) EventDriver;
@@ -59,12 +59,11 @@ public class BingTest {
 			Assert.assertTrue(AfterSizeList > BeforeSizeList, "Изображения не подгружаются");
 			Logs.RecordsLogs("Подгруженные изображения " + AfterSizeList);
 		}
+		Js.executeScript("window.scrollTo(0, -document.body.scrollHeight)");
 	}
 
 	@Test(dataProvider = "Select", dependsOnMethods = "Test1")
-
 	public void Test2(String Select) {
-		System.out.println(Select + "\n");
 		WebElement FieldSelect = (new WebDriverWait(EventDriver, 10))
 				.until(ExpectedConditions.visibilityOf(EventDriver.findElement(By.xpath("//input[@id='sb_form_q']"))));
 		FieldSelect.clear();
@@ -76,11 +75,8 @@ public class BingTest {
 				.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//div[@class='dg_u']"))));
 		Logs.RecordsLogs("Количество изображений по запросу " + Select + ": " + ImgPass.size());
 
-		WebElement FirstElem = ((new WebDriverWait(EventDriver, 10)).until(ExpectedConditions
-				.visibilityOf(EventDriver.findElement(By.xpath("//div[@test-fb='true']/div/div[1]")))));
-
 		Actions Action = new Actions(EventDriver);
-		Action.moveToElement(FirstElem).build().perform();
+		Action.moveToElement(ImgPass.get(0)).build().perform();
 		Logs.RecordsLogs("Курсор на первое изображение передвинут");
 
 		WebElement ImgBig = (new WebDriverWait(EventDriver, 10)).until(
@@ -88,19 +84,17 @@ public class BingTest {
 		Assert.assertTrue(ImgBig.isDisplayed(), "Большое изображение не отображается");
 		Logs.RecordsLogs("Увеличенное изображение отображается");
 
-		WebElement ImgBigSea = (new WebDriverWait(EventDriver, 10))
-				.until(ExpectedConditions.elementToBeClickable(By.xpath("//img[@class='ovrf ovrfIconMS']")));
-		ImgBigSea.click();
-
 		WebElement AddCol = (new WebDriverWait(EventDriver, 10)).until(ExpectedConditions.elementToBeClickable(
 				By.xpath("//span[@class='irhcsb']/span[@class='favC']")));
-		Assert.assertTrue(AddCol.isDisplayed(), "Кнопка не отображается");
 		Logs.RecordsLogs("Отображение кнопки Добавить в коллекцию " + AddCol.isDisplayed());
 
 		WebElement Mess = (new WebDriverWait(EventDriver, 10))
 				.until(ExpectedConditions.elementToBeClickable(By.xpath("//img[@class='ovrf ovrfIconFA']")));
-		Assert.assertTrue(Mess.isDisplayed(), "Кнопка не отображается");
 		Logs.RecordsLogs("Отображение кнопки Сообщить о нарушении " + Mess.isDisplayed());
+		
+		WebElement ImgBigSea = (new WebDriverWait(EventDriver, 10))
+				.until(ExpectedConditions.elementToBeClickable(By.xpath("//img[@class='ovrf ovrfIconMS']")));
+		ImgBigSea.click();		
 
 		WebElement ImgSelect = (new WebDriverWait(EventDriver, 15)).until(
 				ExpectedConditions.presenceOfElementLocated(By.xpath("//img[@class='mainImage accessible nofocus']")));
@@ -114,12 +108,14 @@ public class BingTest {
 		WebElement ImgS = (new WebDriverWait(EventDriver, 15))
 				.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@id='mmComponent_images_4_1_1_exp']")));
 		ImgS.click();
+		
 		List<WebElement> ImgAll = (new WebDriverWait(EventDriver, 15)).until(ExpectedConditions.visibilityOfAllElements(
 				EventDriver.findElements(By.xpath("//ul[@id='mmComponent_images_4_1_1_list']/li[@data-row]"))));
+		
 		int Size = ImgAll.size() - ImgVisib.size();
 		Logs.RecordsLogs("Количество подгруженных изображений: " + Size);
 		Logs.RecordsLogs("Сравнение количества подгруженных изображений с минимумом подгрузки");
-		Assert.assertTrue(Size > Img, "Подгрузилось изображений меньше минимума");
+		Assert.assertTrue(Size > Imgs, "Подгрузилось изображений меньше минимума");
 		Logs.RecordsLogs("Подгрузилось изображений больше минимума");
 		EventDriver.navigate().back();
 
@@ -127,8 +123,8 @@ public class BingTest {
 
 	@Test()
 	@Parameters({ "Img" })
-	public void Test3(String ImgStr) {
-		Img = Integer.parseInt(ImgStr);
+	public void Test3(String Img) {
+		Imgs = Integer.parseInt(Img);
 	}
 
 	@DataProvider
